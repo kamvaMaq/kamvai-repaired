@@ -1,0 +1,237 @@
+import { boolean, index, int, mysqlEnum, mysqlTable, text, timestamp, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
+
+export const users = mysqlTable("users", {
+  id: int("id").autoincrement().primaryKey(),
+  openId: varchar("openId", { length: 64 }).notNull().unique(),
+  name: text("name"),
+  email: varchar("email", { length: 320 }),
+  loginMethod: varchar("loginMethod", { length: 64 }),
+  role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
+});
+
+export const userPreferences = mysqlTable("user_preferences", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  theme: mysqlEnum("theme", ["system", "light", "dark"]).default("system").notNull(),
+  locale: varchar("locale", { length: 16 }).default("en").notNull(),
+  weeklyGenerationGoal: int("weeklyGenerationGoal").default(5).notNull(),
+  privacyConsentVersion: varchar("privacyConsentVersion", { length: 32 }),
+  privacyConsentAt: timestamp("privacyConsentAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, table => ({
+  userIdUnique: uniqueIndex("user_preferences_user_id_idx").on(table.userId),
+}));
+
+export const promptLibraryFavorites = mysqlTable("prompt_library_favorites", {
+  id: varchar("id", { length: 32 }).primaryKey(),
+  userId: int("userId").notNull(),
+  promptId: varchar("promptId", { length: 64 }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, table => ({
+  userPromptUnique: uniqueIndex("prompt_library_favorites_user_prompt_idx").on(table.userId, table.promptId),
+  userCreatedAt: index("prompt_library_favorites_user_created_idx").on(table.userId, table.createdAt),
+}));
+
+export const promptLibraryItems = mysqlTable("prompt_library_items", {
+  id: varchar("id", { length: 32 }).primaryKey(),
+  title: varchar("title", { length: 120 }).notNull(),
+  body: text("body").notNull(),
+  kind: mysqlEnum("kind", ["blog", "email", "code", "image"]).notNull(),
+  category: varchar("category", { length: 64 }).notNull(),
+  locale: varchar("locale", { length: 8 }).default("en").notNull(),
+  publicSlug: varchar("publicSlug", { length: 40 }).unique(),
+  isBuiltIn: boolean("isBuiltIn").default(false).notNull(),
+  createdByUserId: int("createdByUserId"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, table => ({
+  visibilityCreatedAt: index("prompt_library_items_visibility_created_idx").on(table.isBuiltIn, table.createdAt),
+  visibilityLocaleCreatedAt: index("prompt_library_items_visibility_locale_created_idx").on(table.isBuiltIn, table.locale, table.createdAt),
+  creatorCreatedAt: index("prompt_library_items_creator_created_idx").on(table.createdByUserId, table.createdAt),
+}));
+
+export const promptLibraryTags = mysqlTable("prompt_library_tags", {
+  id: varchar("id", { length: 32 }).primaryKey(),
+  userId: int("userId").notNull(),
+  name: varchar("name", { length: 32 }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, table => ({
+  userNameUnique: uniqueIndex("prompt_library_tags_user_name_idx").on(table.userId, table.name),
+  userCreatedAt: index("prompt_library_tags_user_created_idx").on(table.userId, table.createdAt),
+}));
+
+export const promptLibraryItemTags = mysqlTable("prompt_library_item_tags", {
+  id: varchar("id", { length: 32 }).primaryKey(),
+  promptId: varchar("promptId", { length: 32 }).notNull(),
+  tagId: varchar("tagId", { length: 32 }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, table => ({
+  promptTagUnique: uniqueIndex("prompt_library_item_tags_prompt_tag_idx").on(table.promptId, table.tagId),
+  promptCreatedAt: index("prompt_library_item_tags_prompt_created_idx").on(table.promptId, table.createdAt),
+  tagCreatedAt: index("prompt_library_item_tags_tag_created_idx").on(table.tagId, table.createdAt),
+}));
+
+export const promptLibraryShareViews = mysqlTable("prompt_library_share_views", {
+  id: varchar("id", { length: 32 }).primaryKey(),
+  promptId: varchar("promptId", { length: 32 }).notNull(),
+  viewedAt: timestamp("viewedAt").defaultNow().notNull(),
+}, table => ({
+  promptViewedAt: index("prompt_library_share_views_prompt_viewed_idx").on(table.promptId, table.viewedAt),
+}));
+
+export const uploadedDocuments = mysqlTable("uploaded_documents", {
+  id: varchar("id", { length: 32 }).primaryKey(),
+  userId: int("userId").notNull(),
+  fileName: varchar("fileName", { length: 180 }).notNull(),
+  mimeType: varchar("mimeType", { length: 100 }).notNull(),
+  sizeBytes: int("sizeBytes").notNull(),
+  storageKey: varchar("storageKey", { length: 320 }).notNull(),
+  storageUrl: text("storageUrl").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, table => ({
+  userCreatedAt: index("uploaded_documents_user_created_idx").on(table.userId, table.createdAt),
+}));
+
+export const documentUploadEvents = mysqlTable("document_upload_events", {
+  id: varchar("id", { length: 32 }).primaryKey(),
+  userId: int("userId").notNull(),
+  documentId: varchar("documentId", { length: 32 }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, table => ({
+  userCreatedAt: index("document_upload_events_user_created_idx").on(table.userId, table.createdAt),
+}));
+
+export const contentDrafts = mysqlTable("content_drafts", {
+  id: varchar("id", { length: 32 }).primaryKey(),
+  userId: int("userId").notNull(),
+  kind: mysqlEnum("kind", ["blog", "email", "code", "image", "chat", "video"]).notNull(),
+  title: varchar("title", { length: 160 }).notNull(),
+  prompt: text("prompt").notNull(),
+  language: varchar("language", { length: 32 }).default("en").notNull(),
+  body: text("body"),
+  imageUrl: text("imageUrl"),
+  publicSlug: varchar("publicSlug", { length: 40 }).unique(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, table => ({
+  userIdCreatedAt: index("content_drafts_user_created_idx").on(table.userId, table.createdAt),
+}));
+
+export const draftRevisions = mysqlTable("draft_revisions", {
+  id: varchar("id", { length: 32 }).primaryKey(),
+  draftId: varchar("draftId", { length: 32 }).notNull(),
+  instruction: text("instruction").notNull(),
+  body: text("body"),
+  imageUrl: text("imageUrl"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, table => ({
+  draftIdCreatedAt: index("draft_revisions_draft_created_idx").on(table.draftId, table.createdAt),
+}));
+
+export const generationUsages = mysqlTable("generation_usages", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  kind: mysqlEnum("kind", ["blog", "email", "code", "image", "chat", "video"]).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, table => ({
+  userIdCreatedAt: index("generation_usages_user_created_idx").on(table.userId, table.createdAt),
+}));
+
+export const entitlements = mysqlTable("entitlements", {
+  id: varchar("id", { length: 32 }).primaryKey(),
+  userId: int("userId").notNull(),
+  plan: mysqlEnum("plan", ["weekly", "monthly"]).notNull(),
+  status: mysqlEnum("status", ["active", "expired", "cancelled"]).default("active").notNull(),
+  startedAt: timestamp("startedAt").notNull(),
+  expiresAt: timestamp("expiresAt").notNull(),
+  provider: varchar("provider", { length: 64 }),
+  providerReference: varchar("providerReference", { length: 128 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, table => ({
+  userIdExpiresAt: index("entitlements_user_expiry_idx").on(table.userId, table.expiresAt),
+}));
+
+export const voucherRedemptionAttempts = mysqlTable("voucher_redemption_attempts", {
+  id: varchar("id", { length: 32 }).primaryKey(),
+  userId: int("userId").notNull(),
+  plan: mysqlEnum("plan", ["weekly", "monthly"]).notNull(),
+  voucherBrand: mysqlEnum("voucherBrand", ["kazang", "oneforyou", "blue", "ott"]).notNull(),
+  maskedVoucherCode: varchar("maskedVoucherCode", { length: 32 }).notNull(),
+  amountCents: int("amountCents").notNull(),
+  status: mysqlEnum("status", ["pending", "confirmed", "failed"]).default("pending").notNull(),
+  provider: varchar("provider", { length: 64 }),
+  providerReference: varchar("providerReference", { length: 128 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, table => ({
+  userIdCreatedAt: index("voucher_redemptions_user_created_idx").on(table.userId, table.createdAt),
+}));
+
+export const emailAuthAccounts = mysqlTable("email_auth_accounts", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  passwordHash: varchar("passwordHash", { length: 255 }).notNull(),
+  verifiedAt: timestamp("verifiedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, table => ({
+  userIdIndex: uniqueIndex("email_auth_accounts_user_id_idx").on(table.userId),
+}));
+
+export const emailOtpChallenges = mysqlTable("email_otp_challenges", {
+  id: varchar("id", { length: 32 }).primaryKey(),
+  email: varchar("email", { length: 320 }).notNull(),
+  purpose: mysqlEnum("purpose", ["signup", "login"]).notNull(),
+  codeHash: varchar("codeHash", { length: 128 }).notNull(),
+  firstName: varchar("firstName", { length: 120 }),
+  pendingPasswordHash: varchar("pendingPasswordHash", { length: 255 }),
+  attempts: int("attempts").default(0).notNull(),
+  status: mysqlEnum("status", ["pending", "verified", "cancelled"]).default("pending").notNull(),
+  expiresAt: timestamp("expiresAt").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, table => ({
+  emailCreatedAt: index("email_otp_challenges_email_created_idx").on(table.email, table.createdAt),
+}));
+
+export const payShapPaymentRequests = mysqlTable("payshap_payment_requests", {
+  id: varchar("id", { length: 32 }).primaryKey(),
+  userId: int("userId").notNull(),
+  plan: mysqlEnum("plan", ["weekly", "monthly"]).notNull(),
+  paymentReference: varchar("paymentReference", { length: 40 }).notNull().unique(),
+  amountCents: int("amountCents").notNull(),
+  status: mysqlEnum("status", ["pending", "confirmed", "rejected", "expired"]).default("pending").notNull(),
+  expiresAt: timestamp("expiresAt").notNull(),
+  reconciledAt: timestamp("reconciledAt"),
+  reconciledByUserId: int("reconciledByUserId"),
+  reconciliationNote: varchar("reconciliationNote", { length: 280 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, table => ({
+  userIdCreatedAt: index("payshap_requests_user_created_idx").on(table.userId, table.createdAt),
+  statusCreatedAt: index("payshap_requests_status_created_idx").on(table.status, table.createdAt),
+}));
+
+export const accountDeletionRequests = mysqlTable("account_deletion_requests", {
+  id: varchar("id", { length: 32 }).primaryKey(),
+  userId: int("userId").notNull(),
+  status: mysqlEnum("status", ["pending", "in_review", "completed", "declined"]).default("pending").notNull(),
+  requestedAt: timestamp("requestedAt").defaultNow().notNull(),
+  resolvedAt: timestamp("resolvedAt"),
+  resolvedByUserId: int("resolvedByUserId"),
+  resolutionNote: varchar("resolutionNote", { length: 280 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, table => ({
+  userIdCreatedAt: index("account_deletion_requests_user_created_idx").on(table.userId, table.createdAt),
+  statusRequestedAt: index("account_deletion_requests_status_requested_idx").on(table.status, table.requestedAt),
+}));
+
+export type User = typeof users.$inferSelect;
+export type InsertUser = typeof users.$inferInsert;
+export type ContentDraft = typeof contentDrafts.$inferSelect;

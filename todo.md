@@ -1,0 +1,139 @@
+# Project TODO
+
+- [x] Create the Kamvai application information architecture, polished responsive navigation, and cohesive visual theme.
+- [x] Implement an accessible content workspace for blog, email, code, and image generation with loading, error, and empty states.
+- [x] Add server-side AI text generation with Claude-compatible model selection, iterative refinements, and language-aware prompts.
+- [x] Add server-side AI image generation, prompt refinement, secure image URLs, and download actions.
+- [x] Add database tables and server procedures for saved drafts, draft revisions, generation usage, user preferences, consent records, entitlements, and voucher-redemption audit records.
+- [x] Enforce a rolling 24-hour free generation allowance entirely on the server and expose remaining allowance to the interface.
+- [x] Implement authenticated saved-draft stacks and protected draft retrieval.
+- [x] Implement account preferences for theme, language, and POPIA consent, with safe unauthenticated fallbacks.
+- [x] Add a dark/light theme toggle that respects system settings until a preference is selected.
+- [x] Document the external professional translation and native-speaker review required before claiming fully reviewed coverage for all 11 official South African languages.
+- [x] Add react-i18next scaffolding, language selection, and baseline localized resources for all 11 official South African languages.
+- [x] Synchronize browser-based voice input with the active interface language and provide unsupported-language messaging.
+- [x] Add safe social-sharing actions for WhatsApp, Facebook, X, LinkedIn, and copy-link.
+- [x] Add public, crawler-readable draft preview pages with Open Graph metadata for shareable text content.
+- [x] Create subscription and voucher-redemption interface flows that never expose full voucher codes and are ready for a configured South African aggregator.
+- [x] Document the external Google, SendGrid, and payment-aggregator configuration required to activate provider-specific sign-in, OTP, receipts, payment webhooks, and voucher redemption.
+- [x] Add Vitest coverage for usage limits, masking behavior, privacy controls, and core server procedures.
+- [x] Validate the build, database migration, tests, and desktop/mobile presentation before delivery.
+- [x] Record Google OAuth activation as deferred until the merchant supplies a Google-owned client ID and secret.
+- [x] Activate SendGrid OTP verification email with the configured verified sender, template, and API credential.
+- [x] Add payment-confirmation and account-deletion request transactional email delivery flows using the configured SendGrid sender.
+- [x] Defer licensed voucher-provider activation because the selected live payment route is manual PayShap; retain the masked-voucher adapter as an optional future integration.
+- [x] Add an operational account-deletion request and administrator-review flow; final policy/legal review remains required before production launch.
+- [x] Add explicit workspace error states for drafts, preferences, allowance, and plan queries.
+- [x] Detect unsupported voice languages before recording and show a language-specific fallback.
+- [x] Extend social sharing to generated image outputs with a safe public image preview route.
+- [x] Display voucher-redemption attempt history and provider configuration status in the workspace.
+- [x] Add Vitest coverage for privacy consent eligibility and protected payment/draft/preference procedures.
+- [x] Run and record automated build, server-test, configured/unconfigured payment-state, and authenticated workspace smoke checks; manual browser interaction verification remains a recommended merchant launch step.
+- [x] Configure the SendGrid OTP adapter with the supplied sender address, verification-template variables, verified sender status checks, and the supplied template ID.
+- [x] Research and present low-friction payment alternatives that do not require immediate voucher-aggregator onboarding.
+- [x] Replace the voucher-only checkout interface with the user-selected interim payment method while retaining masked voucher support as a future option.
+- [x] Add manual PayShap request records with unique references, payer instructions, expiry, and pending status.
+- [x] Add administrator-only reconciliation controls that can confirm or reject a PayShap request and create an entitlement only on confirmation.
+- [x] Add customer-facing PayShap instructions and payment-status history without exposing sensitive bank account information beyond configured payment details.
+- [x] Remove the obsolete voucher checkout controls from the customer interface and replace the CSS hiding workaround with explicit PayShap-first rendering.
+- [x] Validate the configured and missing-merchant PayShap instruction states, status-history wiring, and pending-only access safeguards with automated coverage and authenticated presentation checks.
+- [x] Add an email/password sign-up, OTP verification, and sign-in dialog that uses the new server authentication procedures.
+- [x] Normalize database timestamp values before calculating rolling generation allowance resets.
+- [x] Return a stable non-undefined deletion-status query result when no privacy request exists.
+- [x] Add regression tests for timestamp normalization and empty privacy status responses.
+- [x] Create a comprehensive README covering Kamvai setup, architecture, operation, validation, and launch prerequisites.
+- [x] Increase the server-enforced free generation allowance from 5 to 10 per rolling 24-hour period and update regression coverage.
+- [x] Add a bottom-of-workspace POPIA privacy and data-rights notice with a direct deletion-request path.
+- [x] Add a Code generator stack selector and include the selected stack in the server-side generation prompt.
+- [x] Add regression coverage for code-generation stack instructions.
+- [x] Add a client-side ZIP download action for generated Code drafts with safe filenames and a clear export manifest.
+- [x] Add regression coverage for code ZIP export packaging.
+- [x] Create and validate a reusable Kamvai full-stack development skill based on the workflow used in this project.
+- [x] Add a protected contribution analytics query with current-week and current-month generation totals, content mix, and activity trend data.
+- [x] Add a responsive personal analytics representation for weekly/monthly user usage and contribution insights.
+- [x] Add regression coverage for contribution analytics aggregation and period boundaries.
+- [x] Add a persisted personal weekly generation-goal preference with a sensible bounded range.
+- [x] Add editable weekly-goal controls and visual progress tracking to the contribution dashboard.
+- [x] Add regression coverage for weekly-goal validation and progress calculation.
+- [x] Add visible success and error feedback for weekly-goal saves in the contribution dashboard.
+- [x] Add router-level regression coverage that rejects weekly goals outside the allowed 1–100 range.
+- [x] Add a private weekly-goal streak calculation based on real prior-week generation history and the active weekly goal.
+- [x] Add a visual consecutive-week completion streak indicator to the contribution dashboard.
+- [x] Add regression coverage for current-week, prior-week, and broken-streak scenarios.
+- [x] Add a private prompt-library data model with reusable prompt content, content type, category, and favourite state.
+- [x] Add protected Prompt Library procedures for browsing, searching, and toggling saved favourites.
+- [x] Add a responsive Prompt Library UI that applies a selected prompt directly to the active generator.
+- [x] Add regression coverage for prompt-library search and favourite behaviour.
+- [x] Add an explicit Prompt Library error state with a retry action for failed protected queries.
+- [x] Add integration-style regression coverage for protected Prompt Library listing, filtering, favourite save, and favourite removal behaviour.
+- [x] Add transactional database regression coverage for seeded prompt search/filtering and user-scoped favourite toggle/untoggle behaviour.
+- [x] Add isiZulu and isiXhosa localized variants for all 16 curated Prompt Library starters.
+- [x] Add a favourites-only Prompt Library filter for the signed-in user.
+- [x] Add secure custom-prompt creation, editing, and deletion procedures scoped to the prompt owner.
+- [x] Add a My Prompts interface for creating, editing, applying, and removing custom templates.
+- [x] Add regression coverage for localization selection, favourites filtering, and custom-prompt ownership management.
+- [x] Add a direct “Use this prompt” action to My Prompts cards.
+- [x] Add regression coverage for applying a custom prompt from My Prompts.
+- [x] Add a component-level regression test that applies an owned custom prompt from the My Prompts tab.
+- [x] Add private reusable tags to custom My Prompts templates, with tag filtering.
+- [x] Add owner-controlled public share links for custom prompt templates with safe public retrieval.
+- [x] Add My Prompts UI controls for managing tags, filtering by tag, and copying or revoking share links.
+- [x] Add regression coverage for tag isolation, tag filtering, share-link authorization, and link revocation.
+- [x] Add explicit database regression coverage that rejects non-owner creation and revocation of custom-prompt share links.
+- [x] Add anonymous shared-prompt view-count persistence without storing viewer identity or personal data.
+- [x] Add protected owner-only procedures to retrieve basic shared-prompt reach analytics.
+- [x] Display basic view counts in My Prompts share management controls.
+- [x] Add regression coverage for view recording, owner-only analytics, and revoked-link view protection.
+- [x] Add component-level regression coverage for the My Prompts anonymous view-counter display.
+- [x] Add a protected owner-only leaderboard that ranks shared custom prompts by anonymous view count.
+- [x] Add a responsive dashboard section showing the owner’s most-viewed shared prompts.
+- [x] Add regression coverage for ranking order, zero-view exclusions, and owner isolation.
+- [x] Add an explicit empty state for users with no shared-prompt views yet.
+- [x] Add a retryable error state for failed shared-prompt leaderboard queries.
+- [x] Add component coverage for leaderboard empty and error states.
+- [x] Add private document-upload records for PDFs, Word files, and images stored through the managed object store.
+- [x] Enforce a server-side rolling 24-hour allowance of three document uploads per user.
+- [x] Add protected upload, listing, and removal procedures with strict file-type and size validation.
+- [x] Add a responsive workspace uploader showing attached files and remaining daily uploads.
+- [x] Add regression coverage for permitted types, rolling upload allowance, and user ownership isolation.
+- [x] Verify DOCX uploads contain expected OOXML document entries rather than accepting generic ZIP files.
+- [x] Add permitted Word and image upload regression coverage.
+- [x] Add explicit non-owner document download and removal rejection coverage.
+- [x] Add regression coverage that rejects a generic ZIP disguised as a DOCX file.
+- [x] Move the Document Workspace from the dashboard into the generator input section.
+- [x] Add an accessible plus-sign attachment action beside the prompt field with upload allowance feedback.
+- [x] Add regression coverage for opening the inline attachment workspace and preserving the upload controls.
+- [x] Add prompt-area file chips that display the user’s currently stored attached documents.
+- [x] Add accessible drag-and-drop uploads to the Document Workspace dialog while preserving file picker support.
+- [x] Add regression coverage for attachment chips and drag-and-drop file selection behavior.
+- [x] Refactor the workspace so the generator is the primary focused surface and secondary tools open only when selected.
+- [x] Add clear on-demand navigation for contribution analytics, weekly goals, streaks, document attachments, prompt tools, and payment activity.
+- [x] Make subscription offers clickable and route users directly to the PayShap payment flow.
+- [x] Add regression coverage for focused workspace navigation and subscription payment entry actions.
+- [x] Adapt the focused workspace visual hierarchy to the supplied centered, calm AI-workspace reference.
+- [x] Add a mobile-accessible Prompt Library entry to the focused workspace controls.
+- [x] Verify every secondary workspace tool is hidden by default and reachable through an explicit trigger across responsive layouts.
+- [x] Add a mobile-accessible Privacy & data entry to the focused workspace controls.
+- [x] Extend focused-workspace regression coverage for all explicit secondary-tool triggers across responsive layouts.
+- [x] Add interaction coverage for mobile Prompt Library, mobile Payments, and Sharing panel triggers in the focused workspace.
+- [x] Keep completed draft output out of the main canvas unless a past draft is explicitly selected from the library.
+- [x] Make New draft open a clean primary chat with cleared generation and refinement state.
+- [x] Make Your Library a collapsible sidebar control so past drafts appear only on demand.
+- [x] Add regression coverage for clean new-chat state, collapsible draft history, and explicit past-draft viewing.
+- [x] Add a mobile-accessible Your Library trigger for reopening saved drafts.
+- [x] Add responsive regression coverage that restores a saved draft from the mobile library and returns to a blank chat with New draft.
+- [x] Add a general-purpose AI chat mode for questions and requests outside the existing creation formats.
+- [x] Add a video planning option with clear output handling alongside image, blog, email, and code modes; rendered video-file generation remains a future integration.
+- [x] Add responsive regression coverage that confirms general chat and video planning mode switching remains reachable at desktop and mobile viewport widths.
+- [x] Add a compact sidebar button that reveals the signed-in user’s remaining Kamvai generation allowance on demand.
+- [x] Add regression coverage for allowance-button visibility and allowance-state feedback.
+- [x] Redesign the primary workspace with a cleaner professional visual hierarchy and reduced visual noise.
+- [x] Refine desktop sidebar navigation, creation-mode controls, and content composition for faster scanning.
+- [x] Improve mobile spacing, controls, and hierarchy while preserving access to all existing workflows.
+- [x] Add regression coverage for the redesigned workspace controls and run responsive visual validation.
+- [x] Define and apply a premium Kamvai visual system with an ownable South African editorial character.
+- [x] Create and integrate a unique Kamvai logo mark across the application header and workspace identity.
+- [x] Elevate desktop and mobile workspace presentation with premium composition, materials, hierarchy, and interaction polish.
+- [x] Add regression coverage and responsive visual validation for the premium branded workspace.
+- [x] Strengthen Kamvai’s distinctive South African editorial brand system with a consistent signature motif and custom identity treatment.
+- [x] Refine header, hero, mode, and empty-state copy and typography so the workspace feels authored, literary, and locally grounded rather than generic.
